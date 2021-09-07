@@ -1,0 +1,83 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Domain", "01. Domain", "{446301A0-97F2-4921-BA0B-32B76039C73B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10. Test", "10. Test", "{D11EB899-A148-4C9B-B340-B907EF71C4A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05. Client", "05. Client", "{EB832FF1-4E01-40ED-BAC4-5ECF70F5C108}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B4782F5A-5BF7-47AF-909D-FB579384CCA0}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci-test.yml = .github\workflows\ci-test.yml
+		README.md = README.md
+		.github\workflows\release-api-client.yml = .github\workflows\release-api-client.yml
+		.github\workflows\release-service.yml = .github\workflows\release-service.yml
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketingBox.AffiliateApi.Tests", "test\MarketingBox.AffiliateApi.Tests\MarketingBox.AffiliateApi.Tests.csproj", "{A6EAE662-7EE9-44CE-9A1A-19751028F533}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp", "test\TestApp\TestApp.csproj", "{79B5F90A-72DC-4C14-8D31-4144C762695A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketingBox.AffiliateApi", "src\MarketingBox.AffiliateApi\MarketingBox.AffiliateApi.csproj", "{59425F46-93A1-4339-93F2-5C5AA2E0ED6D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketingBox.AffiliateApi.Domain", "src\MarketingBox.AffiliateApi.Domain\MarketingBox.AffiliateApi.Domain.csproj", "{6B2D96B3-6D8C-4A87-9B36-22A6846925D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketingBox.AffiliateApi.Domain.Models", "src\MarketingBox.AffiliateApi.Domain.Models\MarketingBox.AffiliateApi.Domain.Models.csproj", "{E60F6498-7161-476E-B519-9703F5B86DC9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketingBox.AffiliateApi.Grpc", "src\MarketingBox.AffiliateApi.Grpc\MarketingBox.AffiliateApi.Grpc.csproj", "{60D4504F-2038-4EBC-B43A-1231F7DCDBD8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketingBox.AffiliateApi.Client", "src\MarketingBox.AffiliateApi.Client\MarketingBox.AffiliateApi.Client.csproj", "{72C2B520-EEB7-444D-97F8-639E3D6F13C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6EAE662-7EE9-44CE-9A1A-19751028F533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6EAE662-7EE9-44CE-9A1A-19751028F533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6EAE662-7EE9-44CE-9A1A-19751028F533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6EAE662-7EE9-44CE-9A1A-19751028F533}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79B5F90A-72DC-4C14-8D31-4144C762695A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79B5F90A-72DC-4C14-8D31-4144C762695A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79B5F90A-72DC-4C14-8D31-4144C762695A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79B5F90A-72DC-4C14-8D31-4144C762695A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59425F46-93A1-4339-93F2-5C5AA2E0ED6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59425F46-93A1-4339-93F2-5C5AA2E0ED6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59425F46-93A1-4339-93F2-5C5AA2E0ED6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59425F46-93A1-4339-93F2-5C5AA2E0ED6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B2D96B3-6D8C-4A87-9B36-22A6846925D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B2D96B3-6D8C-4A87-9B36-22A6846925D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B2D96B3-6D8C-4A87-9B36-22A6846925D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B2D96B3-6D8C-4A87-9B36-22A6846925D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E60F6498-7161-476E-B519-9703F5B86DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E60F6498-7161-476E-B519-9703F5B86DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E60F6498-7161-476E-B519-9703F5B86DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E60F6498-7161-476E-B519-9703F5B86DC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60D4504F-2038-4EBC-B43A-1231F7DCDBD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60D4504F-2038-4EBC-B43A-1231F7DCDBD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60D4504F-2038-4EBC-B43A-1231F7DCDBD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60D4504F-2038-4EBC-B43A-1231F7DCDBD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72C2B520-EEB7-444D-97F8-639E3D6F13C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72C2B520-EEB7-444D-97F8-639E3D6F13C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72C2B520-EEB7-444D-97F8-639E3D6F13C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72C2B520-EEB7-444D-97F8-639E3D6F13C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A6EAE662-7EE9-44CE-9A1A-19751028F533} = {D11EB899-A148-4C9B-B340-B907EF71C4A2}
+		{79B5F90A-72DC-4C14-8D31-4144C762695A} = {D11EB899-A148-4C9B-B340-B907EF71C4A2}
+		{6B2D96B3-6D8C-4A87-9B36-22A6846925D3} = {446301A0-97F2-4921-BA0B-32B76039C73B}
+		{E60F6498-7161-476E-B519-9703F5B86DC9} = {446301A0-97F2-4921-BA0B-32B76039C73B}
+		{60D4504F-2038-4EBC-B43A-1231F7DCDBD8} = {446301A0-97F2-4921-BA0B-32B76039C73B}
+		{72C2B520-EEB7-444D-97F8-639E3D6F13C1} = {EB832FF1-4E01-40ED-BAC4-5ECF70F5C108}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6BF00C9D-AD55-40F2-8FE3-E5C3559B3E26}
+	EndGlobalSection
+EndGlobal
