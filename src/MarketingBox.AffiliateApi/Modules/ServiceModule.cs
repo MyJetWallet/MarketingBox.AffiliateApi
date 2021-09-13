@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using MarketingBox.Affiliate.Service.Client;
 
 namespace MarketingBox.AffiliateApi.Modules
 {
@@ -6,7 +7,7 @@ namespace MarketingBox.AffiliateApi.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            
+            builder.RegisterAssetsDictionaryClient(Program.Settings.AffiliateServiceUrl);
         }
     }
 }

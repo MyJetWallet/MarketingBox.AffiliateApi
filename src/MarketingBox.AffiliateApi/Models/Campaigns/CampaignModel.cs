@@ -15,5 +15,7 @@
         public CampaignStatus Status { get; set; }
 
         public CampaignPrivacy Privacy { get; set; }
+
+        public long Sequence { get; set; }
     }
 }

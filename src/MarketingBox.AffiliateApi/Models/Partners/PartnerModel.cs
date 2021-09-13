@@ -13,6 +13,6 @@ namespace MarketingBox.AffiliateApi.Models.Partners
         public PartnerCompany Company { get; set; }
 
         public PartnerBank Bank { get; set; }
-
+        public long Sequence { get; set; }
     }
 }

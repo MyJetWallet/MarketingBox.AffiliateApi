@@ -2,11 +2,18 @@ using MarketingBox.AffiliateApi.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
+using MarketingBox.AfffliateApi.Models.CampaignBoxes;
+using MarketingBox.Affiliate.Service.Grpc;
+using MarketingBox.Affiliate.Service.Grpc.Models.CampaignBoxes.Requests;
+using MarketingBox.AffiliateApi.Extensions;
 using MarketingBox.AffiliateApi.Models.CampaignBoxes;
 using MarketingBox.AffiliateApi.Models.CampaignBoxes.Requests;
 using MarketingBox.AffiliateApi.Models.Campaigns;
 using MarketingBox.AffiliateApi.Models.Campaigns.Requests;
+using CampaignBoxCreateRequest = MarketingBox.AffiliateApi.Models.CampaignBoxes.Requests.CampaignBoxCreateRequest;
+using CampaignBoxUpdateRequest = MarketingBox.AffiliateApi.Models.CampaignBoxes.Requests.CampaignBoxUpdateRequest;
 
 namespace MarketingBox.AffiliateApi.Controllers
 {
@@ -14,8 +21,11 @@ namespace MarketingBox.AffiliateApi.Controllers
     [Route("/api/campaign-boxes")]
     public class CampaignBoxController : ControllerBase
     {
-        public CampaignBoxController()
+        private readonly ICampaignBoxService _campaignBoxService;
+
+        public CampaignBoxController(ICampaignBoxService campaignBoxService)
         {
+            _campaignBoxService = campaignBoxService;
         }
 
         /// <summary>
@@ -47,13 +57,50 @@ namespace MarketingBox.AffiliateApi.Controllers
         /// </summary>
         /// <remarks>
         /// </remarks>
+        [HttpGet("{campaignBoxId}")]
+        [ProducesResponseType(typeof(CampaignBoxModel), StatusCodes.Status200OK)]
+
+        public async Task<ActionResult<CampaignBoxModel>> GetAsync(
+            [FromRoute, Required] long campaignBoxId)
+        {
+            var tenantId = this.GetTenantId();
+            var response = await _campaignBoxService.GetAsync(new CampaignBoxGetRequest() { CampaignBoxId = campaignBoxId});
+
+            return MapToResponse(response);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
         [HttpPost]
         [ProducesResponseType(typeof(CampaignBoxModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<CampaignBoxModel>> CreateAsync(
             [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [FromBody] CampaignBoxCreateRequest request)
         {
-            return Ok();
+            var tenantId = this.GetTenantId();
+            var response = await _campaignBoxService.CreateAsync(new Affiliate.Service.Grpc.Models.CampaignBoxes.Requests.CampaignBoxCreateRequest()
+            {
+                ActivityHours = request.ActivityHours.Select(x => new Affiliate.Service.Grpc.Models.CampaignBoxes.ActivityHours()
+                {
+                    Day = x.Day,
+                    From = x.From,
+                    IsActive = x.IsActive,
+                    To = x.To
+                }).ToArray(),
+                BoxId = request.BoxId,
+                CampaignId = request.CampaignId,
+                CapType = request.CapType.MapEnum< Affiliate.Service.Grpc.Models.CampaignBoxes.CapType> (),
+                CountryCode = request.CountryCode,
+                DailyCapValue = request.DailyCapValue,
+                EnableTraffic = request.EnableTraffic,
+                Information = request.Information,
+                Priority = request.Priority,
+                Weight = request.Weight
+            });
+
+            return MapToResponse(response);
         }
 
         /// <summary>
@@ -67,7 +114,29 @@ namespace MarketingBox.AffiliateApi.Controllers
             [Required, FromRoute] long campaignBoxId,
             [FromBody] CampaignBoxUpdateRequest request)
         {
-            return Ok();
+            var response = await _campaignBoxService.UpdateAsync(new Affiliate.Service.Grpc.Models.CampaignBoxes.Requests.CampaignBoxUpdateRequest()
+            {
+                Sequence = request.Sequence,
+                CampaignBoxId = campaignBoxId,
+                ActivityHours = request.ActivityHours.Select(x => new Affiliate.Service.Grpc.Models.CampaignBoxes.ActivityHours()
+                {
+                    Day = x.Day,
+                    From = x.From,
+                    IsActive = x.IsActive,
+                    To = x.To
+                }).ToArray(),
+                BoxId = request.BoxId,
+                CampaignId = request.CampaignId,
+                CapType = request.CapType.MapEnum<Affiliate.Service.Grpc.Models.CampaignBoxes.CapType>(),
+                CountryCode = request.CountryCode,
+                DailyCapValue = request.DailyCapValue,
+                EnableTraffic = request.EnableTraffic,
+                Information = request.Information,
+                Priority = request.Priority,
+                Weight = request.Weight
+            });
+
+            return MapToResponse(response);
         }
 
         /// <summary>
@@ -76,10 +145,59 @@ namespace MarketingBox.AffiliateApi.Controllers
         /// </remarks>
         [HttpDelete("{campaignBoxId}")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
-        public async Task<ActionResult> UpdateAsync(
+        public async Task<ActionResult> DeleteAsync(
             [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long campaignBoxId)
         {
+            var response = await _campaignBoxService.DeleteAsync(
+                new Affiliate.Service.Grpc.Models.CampaignBoxes.Requests.CampaignBoxDeleteRequest()
+            {
+                CampaignBoxId = campaignBoxId,
+            });
+
+            return MapToResponseEmpty(response);
+        }
+
+        public ActionResult MapToResponse(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBoxResponse response)
+        {
+            if (response.Error != null)
+            {
+                ModelState.AddModelError("", response.Error.Message);
+
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new CampaignBoxModel()
+            {
+                BoxId = response.CampaignBox.BoxId,
+                CampaignId = response.CampaignBox.CampaignId,
+                ActivityHours = response.CampaignBox.ActivityHours.Select(x => new ActivityHours()
+                {
+                    Day = x.Day,
+                    From = x.From,
+                    IsActive = x.IsActive,
+                    To = x.To
+                }).ToArray(),
+                CampaignBoxId = response.CampaignBox.CampaignBoxId,
+                CapType = response.CampaignBox.CapType.MapEnum<CapType>(),
+                CountryCode = response.CampaignBox.CountryCode,
+                DailyCapValue = response.CampaignBox.DailyCapValue,
+                EnableTraffic = response.CampaignBox.EnableTraffic,
+                Information = response.CampaignBox.Information,
+                Priority = response.CampaignBox.Priority,
+                Weight = response.CampaignBox.Weight
+            });
+        }
+
+        public ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBoxResponse response)
+        {
+            if (response.Error != null)
+            {
+                ModelState.AddModelError("", response.Error.Message);
+
+                return BadRequest(ModelState);
+            }
+
             return Ok();
         }
     }

@@ -1,14 +1,15 @@
-using MarketingBox.AffiliateApi.Models.Partners;
-using MarketingBox.AffiliateApi.Models.Partners.Requests;
+using MarketingBox.Affiliate.Service.Grpc;
+using MarketingBox.Affiliate.Service.Grpc.Models.Brands.Messages;
+using MarketingBox.AffiliateApi.Extensions;
+using MarketingBox.AffiliateApi.Models.Brands;
+using MarketingBox.AffiliateApi.Models.Brands.Requests;
 using MarketingBox.AffiliateApi.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using MarketingBox.AffiliateApi.Models.Boxes;
-using MarketingBox.AffiliateApi.Models.Boxes.Requests;
-using MarketingBox.AffiliateApi.Models.Brands;
-using MarketingBox.AffiliateApi.Models.Brands.Requests;
+using BrandCreateRequest = MarketingBox.AffiliateApi.Models.Brands.Requests.BrandCreateRequest;
+using BrandUpdateRequest = MarketingBox.AffiliateApi.Models.Brands.Requests.BrandUpdateRequest;
 
 namespace MarketingBox.AffiliateApi.Controllers
 {
@@ -16,8 +17,11 @@ namespace MarketingBox.AffiliateApi.Controllers
     [Route("/api/brands")]
     public class BrandController : ControllerBase
     {
-        public BrandController()
+        private readonly IBrandService _brandService;
+
+        public BrandController(IBrandService brandService)
         {
+            _brandService = brandService;
         }
 
         /// <summary>
@@ -45,6 +49,20 @@ namespace MarketingBox.AffiliateApi.Controllers
             return Ok();
         }
 
+        [HttpGet("{brandId}")]
+        [ProducesResponseType(typeof(BrandModel), StatusCodes.Status200OK)]
+
+        public async Task<ActionResult<Paginated<BrandModel, long>>> GetAsync(
+            [FromRoute] long brandId)
+        {
+            var response = await _brandService.GetAsync(new BrandGetRequest()
+            {
+                 BrandId = brandId
+            });
+
+            return MapToResponse(response);
+        }
+
         /// <summary>
         /// </summary>
         /// <remarks>
@@ -55,7 +73,14 @@ namespace MarketingBox.AffiliateApi.Controllers
             [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [FromBody] BrandCreateRequest request)
         {
-            return Ok();
+            var tenantId = this.GetTenantId();
+            var response = await _brandService.CreateAsync(new Affiliate.Service.Grpc.Models.Brands.Messages.BrandCreateRequest()
+            {
+                Name = request.Name,
+                TenantId = tenantId
+            });
+
+            return MapToResponse(response);
         }
 
         /// <summary>
@@ -69,7 +94,16 @@ namespace MarketingBox.AffiliateApi.Controllers
             [Required, FromRoute] long brandId,
             [FromBody] BrandUpdateRequest request)
         {
-            return Ok();
+            var tenantId = this.GetTenantId();
+            var response = await _brandService.UpdateAsync(new Affiliate.Service.Grpc.Models.Brands.Messages.BrandUpdateRequest()
+            {
+                Name = request.Name,
+                TenantId = tenantId,
+                Sequence = request.Sequence,
+                BrandId = brandId
+            });
+
+            return MapToResponse(response);
         }
 
         /// <summary>
@@ -82,6 +116,41 @@ namespace MarketingBox.AffiliateApi.Controllers
             [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long brandId)
         {
+            var tenantId = this.GetTenantId();
+            var response = await _brandService.DeleteAsync(new Affiliate.Service.Grpc.Models.Brands.Messages.BrandDeleteRequest()
+            {
+                BrandId = brandId
+            });
+
+            return MapToResponse(response);
+        }
+
+        public ActionResult MapToResponse(Affiliate.Service.Grpc.Models.Brands.BrandResponse response)
+        {
+            if (response.Error != null)
+            {
+                ModelState.AddModelError("", response.Error.Message);
+
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new BrandModel()
+            {
+                Sequence = response.Brand.Sequence,
+                Name = response.Brand.Name,
+                Id = response.Brand.Id
+            });
+        }
+
+        public ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Brands.BrandResponse response)
+        {
+            if (response.Error != null)
+            {
+                ModelState.AddModelError("", response.Error.Message);
+
+                return BadRequest(ModelState);
+            }
+
             return Ok();
         }
     }

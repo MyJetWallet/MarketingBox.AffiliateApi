@@ -13,5 +13,8 @@ namespace MarketingBox.AffiliateApi.Settings
 
         [YamlProperty("MarketingBoxAffiliateApi.ElkLogs")]
         public LogElkSettings ElkLogs { get; set; }
+
+        [YamlProperty("MarketingBoxAffiliateApi.AffiliateServiceUrl")]
+        public string AffiliateServiceUrl { get; set; }
     }
 }
