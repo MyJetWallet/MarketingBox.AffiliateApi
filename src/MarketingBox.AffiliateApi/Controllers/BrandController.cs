@@ -8,11 +8,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using BrandCreateRequest = MarketingBox.AffiliateApi.Models.Brands.Requests.BrandCreateRequest;
 using BrandUpdateRequest = MarketingBox.AffiliateApi.Models.Brands.Requests.BrandUpdateRequest;
 
 namespace MarketingBox.AffiliateApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("/api/brands")]
     public class BrandController : ControllerBase
@@ -70,7 +72,7 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(BrandModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<BrandModel>> CreateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
+            
             [FromBody] BrandCreateRequest request)
         {
             var tenantId = this.GetTenantId();
@@ -90,7 +92,7 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPut("{brandId}")]
         [ProducesResponseType(typeof(BrandModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<BrandModel>> UpdateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
+            
             [Required, FromRoute] long brandId,
             [FromBody] BrandUpdateRequest request)
         {
@@ -113,7 +115,7 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpDelete("{brandId}")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         public async Task<ActionResult> UpdateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
+            
             [Required, FromRoute] long brandId)
         {
             var tenantId = this.GetTenantId();
@@ -125,7 +127,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             return MapToResponse(response);
         }
 
-        public ActionResult MapToResponse(Affiliate.Service.Grpc.Models.Brands.BrandResponse response)
+        private ActionResult MapToResponse(Affiliate.Service.Grpc.Models.Brands.BrandResponse response)
         {
             if (response.Error != null)
             {
@@ -142,7 +144,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             });
         }
 
-        public ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Brands.BrandResponse response)
+        private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Brands.BrandResponse response)
         {
             if (response.Error != null)
             {

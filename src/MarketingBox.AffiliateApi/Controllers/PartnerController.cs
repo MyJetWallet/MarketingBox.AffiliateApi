@@ -5,14 +5,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using MarketingBox.Affiliate.Service.Client;
 using MarketingBox.Affiliate.Service.Grpc;
 using MarketingBox.Affiliate.Service.Grpc.Models.Partners.Messages;
 using MarketingBox.AffiliateApi.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using PartnerCreateRequest = MarketingBox.AffiliateApi.Models.Partners.Requests.PartnerCreateRequest;
 using PartnerUpdateRequest = MarketingBox.AffiliateApi.Models.Partners.Requests.PartnerUpdateRequest;
 
 namespace MarketingBox.AffiliateApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("/api/partners")]
     public class PartnerController : ControllerBase
@@ -61,8 +64,9 @@ namespace MarketingBox.AffiliateApi.Controllers
         {
             var response = await _partnerService.GetAsync(new PartnerGetRequest()
             {
-                 AffiliateId = partnerId
+                AffiliateId = partnerId
             });
+
 
             return MapToResponse(response);
         }
@@ -74,11 +78,10 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(PartnerModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<PartnerModel>> CreateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [FromBody] PartnerCreateRequest request)
         {
             var tenantId = this.GetTenantId();
-                var response = await _partnerService.CreateAsync(new Affiliate.Service.Grpc.Models.Partners.Messages.PartnerCreateRequest()
+            var response = await _partnerService.CreateAsync(new Affiliate.Service.Grpc.Models.Partners.Messages.PartnerCreateRequest()
             {
                 TenantId = tenantId,
                 Bank = new Affiliate.Service.Grpc.Models.Partners.PartnerBank()
@@ -101,10 +104,10 @@ namespace MarketingBox.AffiliateApi.Controllers
                 GeneralInfo = new Affiliate.Service.Grpc.Models.Partners.PartnerGeneralInfo()
                 {
                     CreatedAt = request.GeneralInfo.CreatedAt,
-                    Currency = request.GeneralInfo.Currency.MapEnum< Affiliate.Service.Grpc.Models.Common.Currency>(),
+                    Currency = request.GeneralInfo.Currency.MapEnum<Affiliate.Service.Grpc.Models.Common.Currency>(),
                     Email = request.GeneralInfo.Email,
                     Password = request.GeneralInfo.Password,
-                    Phone= request.GeneralInfo.Phone,
+                    Phone = request.GeneralInfo.Phone,
                     Role = request.GeneralInfo.Role.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerRole>(),
                     Skype = request.GeneralInfo.Skype,
                     State = request.GeneralInfo.State.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerState>(),
@@ -123,7 +126,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPut("{partnerId}")]
         [ProducesResponseType(typeof(PartnerModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<PartnerModel>> UpdateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long partnerId,
             [FromBody] PartnerUpdateRequest request)
         {
@@ -175,7 +177,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpDelete("{partnerId}")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         public async Task<ActionResult> DeleteAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long partnerId)
         {
             var response = await _partnerService.DeleteAsync(new Affiliate.Service.Grpc.Models.Partners.Messages.PartnerDeleteRequest()
@@ -186,7 +187,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             return MapToResponseEmpty(response);
         }
 
-        public ActionResult MapToResponse(Affiliate.Service.Grpc.Models.Partners.PartnerResponse response)
+        private ActionResult MapToResponse(Affiliate.Service.Grpc.Models.Partners.PartnerResponse response)
         {
             if (response.Error != null)
             {
@@ -194,6 +195,9 @@ namespace MarketingBox.AffiliateApi.Controllers
 
                 return BadRequest(ModelState);
             }
+
+            if (response.Partner == null)
+                return NotFound();
 
             return Ok(new PartnerModel()
             {
@@ -228,11 +232,11 @@ namespace MarketingBox.AffiliateApi.Controllers
                     Username = response.Partner.GeneralInfo.Username,
                     ZipCode = response.Partner.GeneralInfo.ZipCode
                 },
-                Sequence = response.Partner.SequenceId
+                Sequence = response.Partner.Sequence
             });
         }
 
-        public ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Partners.PartnerResponse response)
+        private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Partners.PartnerResponse response)
         {
             if (response.Error != null)
             {

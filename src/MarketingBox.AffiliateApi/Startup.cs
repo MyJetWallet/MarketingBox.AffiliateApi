@@ -1,17 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Text;
 using Autofac;
 using MarketingBox.AffiliateApi.Grpc;
 using MarketingBox.AffiliateApi.Modules;
 using MarketingBox.AffiliateApi.Services;
 using MarketingBox.AffiliateApi.Swagger;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyJetWallet.Sdk.GrpcMetrics;
 using MyJetWallet.Sdk.GrpcSchema;
@@ -51,7 +55,32 @@ namespace MarketingBox.AffiliateApi
 
             services.AddHostedService<ApplicationLifetimeManager>();
 
+            services
+                .AddAuthentication(ConfigureAuthenticationOptions)
+                .AddJwtBearer(ConfigureJwtBearerOptions);
+
             services.AddMyTelemetry("SP-", Program.Settings.ZipkinUrl);
+        }
+
+        protected virtual void ConfigureJwtBearerOptions(JwtBearerOptions options)
+        {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Program.Settings.JwtSecret)),
+                ValidateIssuer = false,
+                ValidateAudience = true,
+                ValidAudience = Program.Settings.JwtAudience,
+                ValidateLifetime = true
+            };
+        }
+
+        protected virtual void ConfigureAuthenticationOptions(AuthenticationOptions options)
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -67,8 +96,7 @@ namespace MarketingBox.AffiliateApi
 
             app.UseCors();
 
-            //if (_useJwtAuth)
-            //    app.UseAuthentication();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
@@ -117,10 +145,7 @@ namespace MarketingBox.AffiliateApi
                 options.AddModelStateDictionaryResponse(code);
             }
 
-            //if (_useJwtAuth)
-            //{
-            //    options.AddJwtBearerAuthorization();
-            //}
+            options.AddJwtBearerAuthorization();
         }
 
         protected virtual void ConfigureMvcNewtonsoftJsonOptions(MvcNewtonsoftJsonOptions options)

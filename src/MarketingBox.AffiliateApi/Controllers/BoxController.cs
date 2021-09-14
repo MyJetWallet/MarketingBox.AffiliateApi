@@ -76,7 +76,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(BoxModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<BoxModel>> CreateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [FromBody] BoxCreateRequest request)
         {
             var tenantId = this.GetTenantId();
@@ -97,7 +96,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPut("{boxId}")]
         [ProducesResponseType(typeof(BoxModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<BoxModel>> UpdateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long boxId,
             [FromBody] BoxUpdateRequest request)
         {
@@ -121,7 +119,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpDelete("{boxId}")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         public async Task<ActionResult> UpdateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long boxId)
         {
             var tenantId = this.GetTenantId();
@@ -134,7 +131,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             return MapToResponseEmpty(response);
         }
 
-        public ActionResult MapToResponse(Affiliate.Service.Grpc.Models.Boxes.BoxResponse response)
+        private ActionResult MapToResponse(Affiliate.Service.Grpc.Models.Boxes.BoxResponse response)
         {
             if (response.Error != null)
             {
@@ -142,6 +139,9 @@ namespace MarketingBox.AffiliateApi.Controllers
 
                 return BadRequest(ModelState);
             }
+
+            if (response.Box == null)
+                return NotFound();
 
             return Ok(new BoxModel()
             {
@@ -151,7 +151,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             });
         }
 
-        public ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Boxes.BoxResponse response)
+        private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Boxes.BoxResponse response)
         {
             if (response.Error != null)
             {

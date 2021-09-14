@@ -16,5 +16,11 @@ namespace MarketingBox.AffiliateApi.Settings
 
         [YamlProperty("MarketingBoxAffiliateApi.AffiliateServiceUrl")]
         public string AffiliateServiceUrl { get; set; }
+
+        [YamlProperty("MarketingBoxAffiliateApi.JwtAudience")]
+        public string JwtAudience { get; set; }
+
+        [YamlProperty("MarketingBoxAffiliateApi.JwtSecret")]
+        public string JwtSecret { get; set; }
     }
 }

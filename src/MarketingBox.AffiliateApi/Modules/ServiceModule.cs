@@ -7,7 +7,7 @@ namespace MarketingBox.AffiliateApi.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterAssetsDictionaryClient(Program.Settings.AffiliateServiceUrl);
+            builder.RegisterAffiliateServiceClient(Program.Settings.AffiliateServiceUrl);
         }
     }
 }

@@ -12,11 +12,13 @@ using MarketingBox.AffiliateApi.Models.CampaignBoxes;
 using MarketingBox.AffiliateApi.Models.CampaignBoxes.Requests;
 using MarketingBox.AffiliateApi.Models.Campaigns;
 using MarketingBox.AffiliateApi.Models.Campaigns.Requests;
+using Microsoft.AspNetCore.Authorization;
 using CampaignBoxCreateRequest = MarketingBox.AffiliateApi.Models.CampaignBoxes.Requests.CampaignBoxCreateRequest;
 using CampaignBoxUpdateRequest = MarketingBox.AffiliateApi.Models.CampaignBoxes.Requests.CampaignBoxUpdateRequest;
 
 namespace MarketingBox.AffiliateApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("/api/campaign-boxes")]
     public class CampaignBoxController : ControllerBase
@@ -76,7 +78,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(CampaignBoxModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<CampaignBoxModel>> CreateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [FromBody] CampaignBoxCreateRequest request)
         {
             var tenantId = this.GetTenantId();
@@ -110,7 +111,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpPut("{campaignBoxId}")]
         [ProducesResponseType(typeof(CampaignBoxModel), StatusCodes.Status200OK)]
         public async Task<ActionResult<CampaignBoxModel>> UpdateAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long campaignBoxId,
             [FromBody] CampaignBoxUpdateRequest request)
         {
@@ -146,7 +146,6 @@ namespace MarketingBox.AffiliateApi.Controllers
         [HttpDelete("{campaignBoxId}")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         public async Task<ActionResult> DeleteAsync(
-            [Required, FromHeader(Name = "X-Request-ID")] string requestId,
             [Required, FromRoute] long campaignBoxId)
         {
             var response = await _campaignBoxService.DeleteAsync(
@@ -158,7 +157,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             return MapToResponseEmpty(response);
         }
 
-        public ActionResult MapToResponse(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBoxResponse response)
+        private ActionResult MapToResponse(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBoxResponse response)
         {
             if (response.Error != null)
             {
@@ -166,6 +165,9 @@ namespace MarketingBox.AffiliateApi.Controllers
 
                 return BadRequest(ModelState);
             }
+
+            if (response.CampaignBox == null)
+                return NotFound();
 
             return Ok(new CampaignBoxModel()
             {
@@ -189,7 +191,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             });
         }
 
-        public ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBoxResponse response)
+        private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBoxResponse response)
         {
             if (response.Error != null)
             {
