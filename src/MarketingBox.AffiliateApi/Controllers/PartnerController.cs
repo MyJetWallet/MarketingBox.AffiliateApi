@@ -112,7 +112,8 @@ namespace MarketingBox.AffiliateApi.Controllers
                     Skype = request.GeneralInfo.Skype,
                     State = request.GeneralInfo.State.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerState>(),
                     Username = request.GeneralInfo.Username,
-                    ZipCode = request.GeneralInfo.ZipCode
+                    ZipCode = request.GeneralInfo.ZipCode,
+                    ApiKey = request.GeneralInfo.ApiKey
                 },
             });
 
@@ -163,7 +164,8 @@ namespace MarketingBox.AffiliateApi.Controllers
                     Skype = request.GeneralInfo.Skype,
                     State = request.GeneralInfo.State.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerState>(),
                     Username = request.GeneralInfo.Username,
-                    ZipCode = request.GeneralInfo.ZipCode
+                    ZipCode = request.GeneralInfo.ZipCode,
+                    ApiKey = request.GeneralInfo.ApiKey
                 },
             });
 
@@ -230,7 +232,8 @@ namespace MarketingBox.AffiliateApi.Controllers
                     Skype = response.Partner.GeneralInfo.Skype,
                     State = response.Partner.GeneralInfo.State.MapEnum<PartnerState>(),
                     Username = response.Partner.GeneralInfo.Username,
-                    ZipCode = response.Partner.GeneralInfo.ZipCode
+                    ZipCode = response.Partner.GeneralInfo.ZipCode,
+                    ApiKey = response.Partner.GeneralInfo.ApiKey
                 },
                 Sequence = response.Partner.Sequence
             });

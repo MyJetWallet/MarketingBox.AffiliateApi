@@ -14,5 +14,6 @@ namespace MarketingBox.AffiliateApi.Models.Partners
         public PartnerState State { get; set; }
         public Currency Currency { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string ApiKey { get; set; }
     }
 }
