@@ -7,5 +7,9 @@ namespace MarketingBox.AffiliateApi.Models.Boxes.Requests
     {
         [FromQuery(Name = "id")]
         public long? Id { get; set; }
+
+        [FromQuery(Name = "name")]
+        public string Name { get; set; }
+
     }
 }

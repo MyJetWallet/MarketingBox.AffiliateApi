@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using BoxCreateRequest = MarketingBox.AffiliateApi.Models.Boxes.Requests.BoxCreateRequest;
 using BoxUpdateRequest = MarketingBox.AffiliateApi.Models.Boxes.Requests.BoxUpdateRequest;
@@ -38,17 +39,27 @@ namespace MarketingBox.AffiliateApi.Controllers
         {
             if (request.Limit < 1 || request.Limit > 1000)
             {
-                ModelState.AddModelError($"{nameof(request.Limit)}", "Should not be in the range 1..1000");
+                ModelState.AddModelError($"{nameof(request.Limit)}", "Should be in the range 1..1000");
 
                 return BadRequest();
             }
 
-            //return Ok(
-            //    many.Select(MapToResponse)
-            //        .ToArray()
-            //        .Paginate(request, Url, x => x.Id));
+            var tenantId = this.GetTenantId();
 
-            return Ok();
+            var response = await _boxService.SearchAsync(new BoxSearchRequest()
+            {
+                Asc = request.Order == PaginationOrder.Asc,
+                BoxId = request.Id,
+                Cursor = request.Cursor,
+                Name = request.Name,
+                Take = request.Limit,
+                TenantId = tenantId
+            });
+
+            return Ok(
+                response.Boxes.Select(Map)
+                    .ToArray()
+                    .Paginate(request, Url, x => x.Id));
         }
 
         /// <summary>
@@ -143,12 +154,17 @@ namespace MarketingBox.AffiliateApi.Controllers
             if (response.Box == null)
                 return NotFound();
 
-            return Ok(new BoxModel()
+            return Ok(Map(response.Box));
+        }
+
+        private static BoxModel Map(MarketingBox.Affiliate.Service.Grpc.Models.Boxes.Box box)
+        {
+            return new BoxModel()
             {
-                Sequence = response.Box.Sequence,
-                Name = response.Box.Name,
-                Id = response.Box.Id
-            });
+                Sequence = box.Sequence,
+                Name = box.Name,
+                Id = box.Id
+            };
         }
 
         private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Boxes.BoxResponse response)

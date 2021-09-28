@@ -7,6 +7,7 @@ using MarketingBox.AffiliateApi.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using BrandCreateRequest = MarketingBox.AffiliateApi.Models.Brands.Requests.BrandCreateRequest;
@@ -43,12 +44,22 @@ namespace MarketingBox.AffiliateApi.Controllers
                 return BadRequest();
             }
 
-            //return Ok(
-            //    many.Select(MapToResponse)
-            //        .ToArray()
-            //        .Paginate(request, Url, x => x.Id));
+            var tenantId = this.GetTenantId();
 
-            return Ok();
+            var response = await _brandService.SearchAsync(new BrandSearchRequest()
+            {
+                Asc = request.Order == PaginationOrder.Asc,
+                BoxId = request.Id,
+                Cursor = request.Cursor,
+                Name = request.Name,
+                Take = request.Limit,
+                TenantId = tenantId
+            });
+
+            return Ok(
+                response.Brands.Select(Map)
+                    .ToArray()
+                    .Paginate(request, Url, x => x.Id));
         }
 
         [HttpGet("{brandId}")]
@@ -136,12 +147,17 @@ namespace MarketingBox.AffiliateApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(new BrandModel()
+            return Ok(Map(response.Brand));
+        }
+
+        private static BrandModel Map(Affiliate.Service.Grpc.Models.Brands.Brand brand)
+        {
+            return new BrandModel()
             {
-                Sequence = response.Brand.Sequence,
-                Name = response.Brand.Name,
-                Id = response.Brand.Id
-            });
+                Sequence = brand.Sequence,
+                Name = brand.Name,
+                Id = brand.Id
+            };
         }
 
         private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Brands.BrandResponse response)

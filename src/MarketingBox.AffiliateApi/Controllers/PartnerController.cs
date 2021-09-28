@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using MarketingBox.Affiliate.Service.Client;
 using MarketingBox.Affiliate.Service.Grpc;
 using MarketingBox.Affiliate.Service.Grpc.Models.Partners.Messages;
+using MarketingBox.Affiliate.Service.Grpc.Models.Partners.Requests;
 using MarketingBox.AffiliateApi.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using PartnerCreateRequest = MarketingBox.AffiliateApi.Models.Partners.Requests.PartnerCreateRequest;
 using PartnerUpdateRequest = MarketingBox.AffiliateApi.Models.Partners.Requests.PartnerUpdateRequest;
+using System.Linq;
 
 namespace MarketingBox.AffiliateApi.Controllers
 {
@@ -44,12 +46,27 @@ namespace MarketingBox.AffiliateApi.Controllers
                 return BadRequest();
             }
 
-            //return Ok(
-            //    many.Select(MapToResponse)
-            //        .ToArray()
-            //        .Paginate(request, Url, x => x.Id));
+            var tenantId = this.GetTenantId();
+            var role = request.Role?.MapEnum<MarketingBox.Affiliate.Service.Grpc.Models.Partners.PartnerRole>();
 
-            return Ok();
+            var response = await _partnerService.SearchAsync(new PartnerSearchRequest()
+            {
+                Asc = request.Order == PaginationOrder.Asc,
+                Cursor = request.Cursor,
+                Name = request.Name,
+                AffiliateId = request.Id,
+                CreatedAt = request.CreatedAt,
+                Email = request.Email,
+                Role = role,
+                Username = request.Username,
+                Take = request.Limit,
+                TenantId = tenantId
+            });
+
+            return Ok(
+                response.Partners.Select(Map)
+                    .ToArray()
+                    .Paginate(request, Url, x => x.AffiliateId));
         }
 
         /// <summary>
@@ -237,6 +254,46 @@ namespace MarketingBox.AffiliateApi.Controllers
                 },
                 Sequence = response.Partner.Sequence
             });
+        }
+
+        private static PartnerModel Map(Affiliate.Service.Grpc.Models.Partners.Partner partner)
+        {
+            return new PartnerModel()
+            {
+                AffiliateId = partner.AffiliateId,
+                Bank = new PartnerBank()
+                {
+                    AccountNumber = partner.Bank.AccountNumber,
+                    BankAddress = partner.Bank.BankAddress,
+                    BankName = partner.Bank.BankName,
+                    BeneficiaryAddress = partner.Bank.BeneficiaryAddress,
+                    BeneficiaryName = partner.Bank.BeneficiaryName,
+                    Iban = partner.Bank.Iban,
+                    Swift = partner.Bank.Swift
+                },
+                Company = new PartnerCompany()
+                {
+                    Address = partner.Company.Address,
+                    Name = partner.Company.Name,
+                    RegNumber = partner.Company.RegNumber,
+                    VatId = partner.Company.VatId
+                },
+                GeneralInfo = new PartnerGeneralInfo()
+                {
+                    CreatedAt = partner.GeneralInfo.CreatedAt,
+                    Currency = partner.GeneralInfo.Currency.MapEnum<Currency>(),
+                    Email = partner.GeneralInfo.Email,
+                    Password = partner.GeneralInfo.Password,
+                    Phone = partner.GeneralInfo.Phone,
+                    Role = partner.GeneralInfo.Role.MapEnum<PartnerRole>(),
+                    Skype = partner.GeneralInfo.Skype,
+                    State = partner.GeneralInfo.State.MapEnum<PartnerState>(),
+                    Username = partner.GeneralInfo.Username,
+                    ZipCode = partner.GeneralInfo.ZipCode,
+                    ApiKey = partner.GeneralInfo.ApiKey
+                },
+                Sequence = partner.Sequence
+            };
         }
 
         private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Partners.PartnerResponse response)

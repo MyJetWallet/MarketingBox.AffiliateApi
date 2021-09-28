@@ -47,12 +47,23 @@ namespace MarketingBox.AffiliateApi.Controllers
                 return BadRequest();
             }
 
-            //return Ok(
-            //    many.Select(MapToResponse)
-            //        .ToArray()
-            //        .Paginate(request, Url, x => x.Id));
+            var tenantId = this.GetTenantId();
 
-            return Ok();
+            var response = await _campaignBoxService.SearchAsync(new CampaignBoxSearchRequest()
+            {
+                Asc = request.Order == PaginationOrder.Asc,
+                BoxId = request.BoxId,
+                Cursor = request.Cursor,
+                CampaignBoxId = request.Id,
+                CampaignId = request.CampaignId,
+                Take = request.Limit,
+                TenantId = tenantId
+            });
+
+            return Ok(
+                response.CampaignBoxes.Select(Map)
+                    .ToArray()
+                    .Paginate(request, Url, x => x.CampaignBoxId));
         }
 
         /// <summary>
@@ -66,7 +77,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             [FromRoute, Required] long campaignBoxId)
         {
             var tenantId = this.GetTenantId();
-            var response = await _campaignBoxService.GetAsync(new CampaignBoxGetRequest() { CampaignBoxId = campaignBoxId});
+            var response = await _campaignBoxService.GetAsync(new CampaignBoxGetRequest() { CampaignBoxId = campaignBoxId });
 
             return MapToResponse(response);
         }
@@ -92,7 +103,7 @@ namespace MarketingBox.AffiliateApi.Controllers
                 }).ToArray(),
                 BoxId = request.BoxId,
                 CampaignId = request.CampaignId,
-                CapType = request.CapType.MapEnum< Affiliate.Service.Grpc.Models.CampaignBoxes.CapType> (),
+                CapType = request.CapType.MapEnum<Affiliate.Service.Grpc.Models.CampaignBoxes.CapType>(),
                 CountryCode = request.CountryCode,
                 DailyCapValue = request.DailyCapValue,
                 EnableTraffic = request.EnableTraffic,
@@ -150,9 +161,9 @@ namespace MarketingBox.AffiliateApi.Controllers
         {
             var response = await _campaignBoxService.DeleteAsync(
                 new Affiliate.Service.Grpc.Models.CampaignBoxes.Requests.CampaignBoxDeleteRequest()
-            {
-                CampaignBoxId = campaignBoxId,
-            });
+                {
+                    CampaignBoxId = campaignBoxId,
+                });
 
             return MapToResponseEmpty(response);
         }
@@ -169,26 +180,31 @@ namespace MarketingBox.AffiliateApi.Controllers
             if (response.CampaignBox == null)
                 return NotFound();
 
-            return Ok(new CampaignBoxModel()
+            return Ok(Map(response.CampaignBox));
+        }
+
+        private static CampaignBoxModel Map(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBox campaignBox)
+        {
+            return new CampaignBoxModel()
             {
-                BoxId = response.CampaignBox.BoxId,
-                CampaignId = response.CampaignBox.CampaignId,
-                ActivityHours = response.CampaignBox.ActivityHours.Select(x => new ActivityHours()
+                BoxId = campaignBox.BoxId,
+                CampaignId = campaignBox.CampaignId,
+                ActivityHours = campaignBox.ActivityHours.Select(x => new ActivityHours()
                 {
                     Day = x.Day,
                     From = x.From,
                     IsActive = x.IsActive,
                     To = x.To
                 }).ToArray(),
-                CampaignBoxId = response.CampaignBox.CampaignBoxId,
-                CapType = response.CampaignBox.CapType.MapEnum<CapType>(),
-                CountryCode = response.CampaignBox.CountryCode,
-                DailyCapValue = response.CampaignBox.DailyCapValue,
-                EnableTraffic = response.CampaignBox.EnableTraffic,
-                Information = response.CampaignBox.Information,
-                Priority = response.CampaignBox.Priority,
-                Weight = response.CampaignBox.Weight
-            });
+                CampaignBoxId = campaignBox.CampaignBoxId,
+                CapType = campaignBox.CapType.MapEnum<CapType>(),
+                CountryCode =   campaignBox.CountryCode,
+                DailyCapValue = campaignBox.DailyCapValue,
+                EnableTraffic = campaignBox.EnableTraffic,
+                Information =   campaignBox.Information,
+                Priority =      campaignBox.Priority,
+                Weight = campaignBox.Weight
+            };
         }
 
         private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.CampaignBoxes.CampaignBoxResponse response)

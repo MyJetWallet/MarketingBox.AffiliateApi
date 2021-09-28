@@ -2,6 +2,7 @@ using MarketingBox.AffiliateApi.Pagination;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using MarketingBox.Affiliate.Service.Grpc;
 using MarketingBox.Affiliate.Service.Grpc.Models.Campaigns.Requests;
@@ -44,12 +45,25 @@ namespace MarketingBox.AffiliateApi.Controllers
                 return BadRequest();
             }
 
-            //return Ok(
-            //    many.Select(MapToResponse)
-            //        .ToArray()
-            //        .Paginate(request, Url, x => x.Id));
+            var tenantId = this.GetTenantId();
+            var status = request.Status.MapEnum<MarketingBox.Affiliate.Service.Grpc.Models.Campaigns.CampaignStatus>();
 
-            return Ok();
+            var response = await _campaignService.SearchAsync(new CampaignSearchRequest()
+            {
+                Asc = request.Order == PaginationOrder.Asc,
+                Cursor = request.Cursor,
+                CampaignId = request.Id,
+                BrandId = request.BrandId,
+                Name = request.Name,
+                Status = status,
+                Take = request.Limit,
+                TenantId = tenantId
+            });
+
+            return Ok(
+                response.Campaigns.Select(Map)
+                    .ToArray()
+                    .Paginate(request, Url, x => x.Id));
         }
 
         /// <summary>
@@ -169,27 +183,32 @@ namespace MarketingBox.AffiliateApi.Controllers
             if (response.Campaign == null)
                 return NotFound();
 
-            return Ok(new CampaignModel()
+            return Ok(Map(response.Campaign));
+        }
+
+        private static CampaignModel Map(Affiliate.Service.Grpc.Models.Campaigns.Campaign campaign)
+        {
+            return new CampaignModel()
             {
-               Name = response.Campaign.Name,
-               BrandId = response.Campaign.BrandId,
-               Id = response.Campaign.Id,
-               Payout = new Payout()
-               {
-                   Currency = response.Campaign.Payout.Currency.MapEnum<Currency>(),
-                   Amount = response.Campaign.Payout.Amount,
-                   Plan = response.Campaign.Payout.Plan.MapEnum<Plan>()
-               },
-               Privacy = response.Campaign.Privacy.MapEnum<CampaignPrivacy>(),
-               Revenue = new Revenue()
-               {
-                   Currency = response.Campaign.Revenue.Currency.MapEnum<Currency>(),
-                   Amount = response.Campaign.Revenue.Amount,
-                   Plan = response.Campaign.Revenue.Plan.MapEnum<Plan>()
-               },
-               Status = response.Campaign.Status.MapEnum<CampaignStatus>(),
-               Sequence = response.Campaign.Sequence
-            });
+                Name = campaign.Name,
+                BrandId = campaign.BrandId,
+                Id = campaign.Id,
+                Payout = new Payout()
+                {
+                    Currency = campaign.Payout.Currency.MapEnum<Currency>(),
+                    Amount = campaign.Payout.Amount,
+                    Plan = campaign.Payout.Plan.MapEnum<Plan>()
+                },
+                Privacy = campaign.Privacy.MapEnum<CampaignPrivacy>(),
+                Revenue = new Revenue()
+                {
+                    Currency = campaign.Revenue.Currency.MapEnum<Currency>(),
+                    Amount = campaign.Revenue.Amount,
+                    Plan = campaign.Revenue.Plan.MapEnum<Plan>()
+                },
+                Status = campaign.Status.MapEnum<CampaignStatus>(),
+                Sequence = campaign.Sequence
+            };
         }
 
         private ActionResult MapToResponseEmpty(Affiliate.Service.Grpc.Models.Campaigns.CampaignResponse response)
