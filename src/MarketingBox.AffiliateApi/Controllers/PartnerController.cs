@@ -55,7 +55,7 @@ namespace MarketingBox.AffiliateApi.Controllers
                 Cursor = request.Cursor,
                 Name = request.Name,
                 AffiliateId = request.Id,
-                CreatedAt = request.CreatedAt,
+                CreatedAt = request.CreatedAt?.DateTime ?? default,
                 Email = request.Email,
                 Role = role,
                 Username = request.Username,
