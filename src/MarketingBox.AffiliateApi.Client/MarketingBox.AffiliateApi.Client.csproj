@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.2.0" />
-    <PackageReference Include="Grpc.Core.Api" Version="2.40.0" />
+    <PackageReference Include="Grpc.Core.Api" Version="2.41.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.39.0" />
     <PackageReference Include="MyJetWallet.Sdk.Grpc" Version="1.0.2" />
