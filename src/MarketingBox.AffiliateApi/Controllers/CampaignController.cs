@@ -46,7 +46,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             }
 
             var tenantId = this.GetTenantId();
-            var status = request.Status.MapEnum<MarketingBox.Affiliate.Service.Grpc.Models.Campaigns.CampaignStatus>();
+            var status = request.Status.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.CampaignStatus>();
 
             var response = await _campaignService.SearchAsync(new CampaignSearchRequest()
             {
@@ -99,17 +99,17 @@ namespace MarketingBox.AffiliateApi.Controllers
                 TenantId = tenantId,
                 Payout = new Affiliate.Service.Grpc.Models.Campaigns.Payout()
                 {
-                    Currency = request.Payout.Currency.MapEnum<Affiliate.Service.Grpc.Models.Common.Currency>(),
+                    Currency = request.Payout.Currency.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Common.Currency>(),
                     Amount = request.Payout.Amount,
-                    Plan = request.Payout.Plan.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.Plan>()
+                    Plan = request.Payout.Plan.MapEnum< MarketingBox.Affiliate.Service.Domain.Models.Campaigns.Plan>()
                 },
-                Status = request.Status.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.CampaignStatus>(),
-                Privacy = request.Privacy.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.CampaignPrivacy>(),
+                Status = request.Status.MapEnum<  MarketingBox.Affiliate.Service.Domain.Models.Campaigns.CampaignStatus>(),
+                Privacy = request.Privacy.MapEnum< MarketingBox.Affiliate.Service.Domain.Models.Campaigns.CampaignPrivacy >(),
                 Revenue = new Affiliate.Service.Grpc.Models.Campaigns.Revenue()
                 {
-                    Currency = request.Revenue.Currency.MapEnum<Affiliate.Service.Grpc.Models.Common.Currency>(),
+                    Currency = request.Revenue.Currency.MapEnum< MarketingBox.Affiliate.Service.Domain.Models.Common.Currency>(),
                     Amount = request.Revenue.Amount,
-                    Plan = request.Revenue.Plan.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.Plan>()
+                    Plan = request.Revenue.Plan.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.Plan>()
                 }
             });
 
@@ -136,17 +136,17 @@ namespace MarketingBox.AffiliateApi.Controllers
                 TenantId = tenantId,
                 Payout = new Affiliate.Service.Grpc.Models.Campaigns.Payout()
                 {
-                    Currency = request.Payout.Currency.MapEnum<Affiliate.Service.Grpc.Models.Common.Currency>(),
+                    Currency = request.Payout.Currency.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Common.Currency>(),
                     Amount = request.Payout.Amount,
-                    Plan = request.Payout.Plan.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.Plan>()
+                    Plan = request.Payout.Plan.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.Plan>()
                 },
-                Status = request.Status.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.CampaignStatus>(),
-                Privacy = request.Privacy.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.CampaignPrivacy>(),
+                Status = request.Status.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.CampaignStatus>(),
+                Privacy = request.Privacy.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.CampaignPrivacy>(),
                 Revenue = new Affiliate.Service.Grpc.Models.Campaigns.Revenue()
                 {
-                    Currency = request.Revenue.Currency.MapEnum<Affiliate.Service.Grpc.Models.Common.Currency>(),
+                    Currency = request.Revenue.Currency.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Common.Currency>(),
                     Amount = request.Revenue.Amount,
-                    Plan = request.Revenue.Plan.MapEnum<Affiliate.Service.Grpc.Models.Campaigns.Plan>()
+                    Plan = request.Revenue.Plan.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.Plan>()
                 }
             });
 

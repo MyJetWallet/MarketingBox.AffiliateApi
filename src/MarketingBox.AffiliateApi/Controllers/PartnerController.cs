@@ -47,7 +47,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             }
 
             var tenantId = this.GetTenantId();
-            var role = request.Role?.MapEnum<MarketingBox.Affiliate.Service.Grpc.Models.Partners.PartnerRole>();
+            var role = request.Role?.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Partners.PartnerRole>();
 
             var response = await _partnerService.SearchAsync(new PartnerSearchRequest()
             {
@@ -121,13 +121,13 @@ namespace MarketingBox.AffiliateApi.Controllers
                 GeneralInfo = new Affiliate.Service.Grpc.Models.Partners.PartnerGeneralInfo()
                 {
                     CreatedAt = request.GeneralInfo.CreatedAt,
-                    Currency = request.GeneralInfo.Currency.MapEnum<Affiliate.Service.Grpc.Models.Common.Currency>(),
+                    Currency = request.GeneralInfo.Currency.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Common.Currency>(),
                     Email = request.GeneralInfo.Email,
                     Password = request.GeneralInfo.Password,
                     Phone = request.GeneralInfo.Phone,
-                    Role = request.GeneralInfo.Role.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerRole>(),
+                    Role = request.GeneralInfo.Role.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Partners.PartnerRole>(),
                     Skype = request.GeneralInfo.Skype,
-                    State = request.GeneralInfo.State.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerState>(),
+                    State = request.GeneralInfo.State.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Partners.PartnerState>(),
                     Username = request.GeneralInfo.Username,
                     ZipCode = request.GeneralInfo.ZipCode,
                     ApiKey = request.GeneralInfo.ApiKey
@@ -173,13 +173,13 @@ namespace MarketingBox.AffiliateApi.Controllers
                 GeneralInfo = new Affiliate.Service.Grpc.Models.Partners.PartnerGeneralInfo()
                 {
                     CreatedAt = request.GeneralInfo.CreatedAt,
-                    Currency = request.GeneralInfo.Currency.MapEnum<Affiliate.Service.Grpc.Models.Common.Currency>(),
+                    Currency = request.GeneralInfo.Currency.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Common.Currency>(),
                     Email = request.GeneralInfo.Email,
                     Password = request.GeneralInfo.Password,
                     Phone = request.GeneralInfo.Phone,
-                    Role = request.GeneralInfo.Role.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerRole>(),
+                    Role = request.GeneralInfo.Role.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Partners.PartnerRole>(),
                     Skype = request.GeneralInfo.Skype,
-                    State = request.GeneralInfo.State.MapEnum<Affiliate.Service.Grpc.Models.Partners.PartnerState>(),
+                    State = request.GeneralInfo.State.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Partners.PartnerState>(),
                     Username = request.GeneralInfo.Username,
                     ZipCode = request.GeneralInfo.ZipCode,
                     ApiKey = request.GeneralInfo.ApiKey
