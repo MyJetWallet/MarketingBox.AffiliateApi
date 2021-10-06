@@ -46,7 +46,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             }
 
             var tenantId = this.GetTenantId();
-            var status = request.Status.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.CampaignStatus>();
+            var status = request.Status?.MapEnum<MarketingBox.Affiliate.Service.Domain.Models.Campaigns.CampaignStatus>();
 
             var response = await _campaignService.SearchAsync(new CampaignSearchRequest()
             {
