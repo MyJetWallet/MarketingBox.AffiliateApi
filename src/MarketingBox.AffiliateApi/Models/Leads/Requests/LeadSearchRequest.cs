@@ -6,5 +6,7 @@ namespace MarketingBox.AffiliateApi.Models.Reports.Requests
 {
     public class LeadSearchRequest : PaginationRequest<long?>
     {
+        [FromQuery("affiliateId")]
+        public long? AffiliateId { get; set; }
     }
 }

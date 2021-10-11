@@ -46,7 +46,8 @@ namespace MarketingBox.AffiliateApi.Controllers
                 Asc = request.Order == PaginationOrder.Asc,
                 Cursor = request.Cursor,
                 Take = request.Limit,
-                TenantId = tenantId
+                TenantId = tenantId,
+                AffiliateId = request.AffiliateId
             });
 
             if (response.Error != null)
