@@ -59,6 +59,9 @@ namespace MarketingBox.AffiliateApi.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (response.Reports == null)
+                return NotFound();
+
             return Ok(
                 response.Reports.Select(x => new ReportModel()
                     {
