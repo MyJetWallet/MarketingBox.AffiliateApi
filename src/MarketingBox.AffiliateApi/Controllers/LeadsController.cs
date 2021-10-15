@@ -41,7 +41,7 @@ namespace MarketingBox.AffiliateApi.Controllers
             }
 
             var tenantId = this.GetTenantId();
-            var response = await _leadService.SearchAsync(new LeadSearchRequest()
+            var response = await _leadService.SearchAsync(new ()
             {
                 Asc = request.Order == PaginationOrder.Asc,
                 Cursor = request.Cursor,
@@ -94,7 +94,6 @@ namespace MarketingBox.AffiliateApi.Controllers
                             CampaignId = x.RouteInfo.CampaignId
                         },
                         Sequence = x.Sequence,
-                        TenantId = x.TenantId,
                         Type = x.Type,
                         UniqueId = x.UniqueId
                     })

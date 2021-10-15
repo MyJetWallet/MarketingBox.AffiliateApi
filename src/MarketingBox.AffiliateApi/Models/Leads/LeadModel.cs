@@ -5,8 +5,6 @@ namespace MarketingBox.Reporting.Service.Grpc.Models.Leads
 {
     public class LeadModel
     {
-        public string TenantId { get; set; }
-
         public long LeadId { get; set; }
 
         public string UniqueId { get; set; }

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>179abb27-f37b-4a02-b529-17c2c43e46b5</UserSecretsId>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +12,8 @@
     <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
     <PackageReference Include="MarketingBox.Affiliate.Service.Client" Version="1.0.12" />
-    <PackageReference Include="MarketingBox.Reporting.Service.Client" Version="1.0.4" />
+    <PackageReference Include="MarketingBox.Registration.Service.Client" Version="1.0.22" />
+    <PackageReference Include="MarketingBox.Reporting.Service.Client" Version="1.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />

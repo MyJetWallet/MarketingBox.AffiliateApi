@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using MarketingBox.Affiliate.Service.Client;
+using MarketingBox.Registration.Service.Client;
 using MarketingBox.Reporting.Service.Client;
 
 namespace MarketingBox.AffiliateApi.Modules
@@ -10,6 +11,7 @@ namespace MarketingBox.AffiliateApi.Modules
         {
             builder.RegisterAffiliateServiceClient(Program.Settings.AffiliateServiceUrl);
             builder.RegisterReportingServiceClient(Program.Settings.ReportingServiceUrl);
+            builder.RegisterRegistrationServiceClient(Program.Settings.RegistrationServiceUrl);
         }
     }
 }
