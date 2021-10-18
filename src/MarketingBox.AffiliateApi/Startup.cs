@@ -17,15 +17,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MyJetWallet.Sdk.GrpcMetrics;
 using MyJetWallet.Sdk.GrpcSchema;
 using MyJetWallet.Sdk.Service;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Prometheus;
-using ProtoBuf.Grpc.Server;
-using SimpleTrading.BaseMetrics;
 using SimpleTrading.ServiceStatusReporterConnector;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -42,7 +39,7 @@ namespace MarketingBox.AffiliateApi
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            services..BindCodeFirstGrpc();
+            services.BindCodeFirstGrpc();
 
             services.AddAuthorization();
             services.AddControllers().AddNewtonsoftJson(ConfigureMvcNewtonsoftJsonOptions);
