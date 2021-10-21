@@ -1,4 +1,4 @@
-﻿namespace MarketingBox.AfffliateApi.Models.CampaignBoxes
+﻿namespace MarketingBox.AffiliateApi.Models.CampaignBoxes
 {
     public enum CapType
     {

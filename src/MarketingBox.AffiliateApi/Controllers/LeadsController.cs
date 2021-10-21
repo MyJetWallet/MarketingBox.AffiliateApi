@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using MarketingBox.AffiliateApi.Models.Leads;
+using MarketingBox.AffiliateApi.Models.Leads.Requests;
+using LeadAdditionalInfo = MarketingBox.AffiliateApi.Models.Leads.LeadAdditionalInfo;
+using LeadGeneralInfo = MarketingBox.AffiliateApi.Models.Leads.LeadGeneralInfo;
+using LeadRouteInfo = MarketingBox.AffiliateApi.Models.Leads.LeadRouteInfo;
 
 namespace MarketingBox.AffiliateApi.Controllers
 {
@@ -31,7 +36,7 @@ namespace MarketingBox.AffiliateApi.Controllers
         [ProducesResponseType(typeof(Paginated<LeadModel, long>), StatusCodes.Status200OK)]
 
         public async Task<ActionResult<Paginated<LeadModel, long>>> SearchAsync(
-            [FromQuery] Models.Reports.Requests.LeadSearchRequest request)
+            [FromQuery] LeadSearchRequest request)
         {
             if (request.Limit < 1 || request.Limit > 1000)
             {
@@ -75,7 +80,7 @@ namespace MarketingBox.AffiliateApi.Controllers
                             Sub8 = x.AdditionalInfo.Sub8,
                             Sub9 = x.AdditionalInfo.Sub9
                         },
-                        CallStatus = x.CallStatus,
+                        Status = x.Status,
                         GeneralInfo = new LeadGeneralInfo()
                         {
                             Email = x.GeneralInfo.Email,
@@ -94,7 +99,7 @@ namespace MarketingBox.AffiliateApi.Controllers
                             CampaignId = x.RouteInfo.CampaignId
                         },
                         Sequence = x.Sequence,
-                        Type = x.Type,
+                        //Type = x.,
                         UniqueId = x.UniqueId
                     })
                     .ToArray()

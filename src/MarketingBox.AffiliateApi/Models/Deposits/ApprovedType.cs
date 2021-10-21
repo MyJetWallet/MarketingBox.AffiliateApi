@@ -1,4 +1,4 @@
-﻿namespace MarketingBox.Reporting.Service.Grpc.Models.Deposits
+﻿namespace MarketingBox.AffiliateApi.Models.Deposits
 {
     public enum ApprovedType
     {

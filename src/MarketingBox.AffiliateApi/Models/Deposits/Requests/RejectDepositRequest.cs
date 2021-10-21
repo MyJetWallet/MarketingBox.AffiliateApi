@@ -1,4 +1,4 @@
-﻿namespace MarketingBox.AffiliateApi.Models.Reports.Requests
+﻿namespace MarketingBox.AffiliateApi.Models.Deposits.Requests
 {
     public class RejectDepositRequest
     {

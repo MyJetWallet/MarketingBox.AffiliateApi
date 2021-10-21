@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace MarketingBox.Reporting.Service.Grpc.Models.Leads
+﻿namespace MarketingBox.AffiliateApi.Models.Leads
 {
     public class LeadAdditionalInfo
     {

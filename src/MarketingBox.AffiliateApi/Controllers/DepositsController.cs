@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
+using MarketingBox.AffiliateApi.Models.Deposits;
+using MarketingBox.AffiliateApi.Models.Deposits.Requests;
 using MarketingBox.Registration.Service.Grpc.Models.Common;
 using MarketingBox.Registration.Service.Grpc.Models.Deposits.Contracts;
 
@@ -79,9 +81,8 @@ namespace MarketingBox.AffiliateApi.Controllers
                         Country = x.Country,
                         CustomerId = x.CustomerId,
                         RegisterDate = x.RegisterDate,
-                        Type = x.Type.MapEnum<MarketingBox.Reporting.Service.Grpc.Models.Deposits.ApprovedType>(),
+                        Type = x.Type.MapEnum<ApprovedType>(),
                         UniqueId = x.UniqueId,
-                        DepositId = x.DepositId
                     })
                     .ToArray()
                     .Paginate(request, Url, x => x.LeadId));
@@ -91,16 +92,16 @@ namespace MarketingBox.AffiliateApi.Controllers
         /// </summary>
         /// <remarks>
         /// </remarks>
-        [HttpPost("{depositId}")]
+        [HttpPost("{leadId}")]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
 
         public async Task<ActionResult<Paginated<DepositModel, long>>> ApproveAsync(
-            [FromRoute, Required] long depositId)
+            [FromRoute, Required] long leadId)
         {
             var tenantId = this.GetTenantId();
             var response = await _registrationDepositService.ApproveDepositAsync(new DepositApproveRequest()
             {
-                DepositId = depositId,
+                LeadId = leadId,
                 Mode = ApproveMode.ApproveManually,
                 TenantId = tenantId
             });

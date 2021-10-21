@@ -1,6 +1,4 @@
 ﻿
-using MarketingBox.AfffliateApi.Models.CampaignBoxes;
-
 namespace MarketingBox.AffiliateApi.Models.CampaignBoxes
 {
     public class CampaignBoxModel

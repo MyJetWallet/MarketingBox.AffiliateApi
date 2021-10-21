@@ -1,7 +1,6 @@
 ﻿using MarketingBox.Reporting.Service.Domain.Models.Lead;
-using System.Runtime.Serialization;
 
-namespace MarketingBox.Reporting.Service.Grpc.Models.Leads
+namespace MarketingBox.AffiliateApi.Models.Leads
 {
     public class LeadModel
     {
@@ -17,9 +16,9 @@ namespace MarketingBox.Reporting.Service.Grpc.Models.Leads
 
         public LeadAdditionalInfo AdditionalInfo { get; set; }
 
-        public LeadType Type  { get; set; }
+        //public LeadType Type  { get; set; }
 
-        public LeadStatus CallStatus{ get; set; }
+        public LeadStatus Status{ get; set; }
 
     }
 }

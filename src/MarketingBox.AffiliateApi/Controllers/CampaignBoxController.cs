@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using MarketingBox.AfffliateApi.Models.CampaignBoxes;
 using MarketingBox.Affiliate.Service.Grpc;
 using MarketingBox.Affiliate.Service.Grpc.Models.CampaignBoxes.Requests;
 using MarketingBox.AffiliateApi.Extensions;
